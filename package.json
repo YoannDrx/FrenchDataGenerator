@@ -4,7 +4,7 @@
   "title": "French Ssn & Iban Generator",
   "description": "Generate realistic French-specific fake data, including Social Security Numbers (SSNs) tied to the birth date and location, IBANs, and addresses. Perfect for developers and testers working with French data scenarios.",
   "icon": "extension-icon.png",
-  "author": "YoannDrx",
+  "author": "yoann-drx",
   "categories": [
     "Data",
     "Productivity",
