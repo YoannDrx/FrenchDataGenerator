@@ -90,7 +90,7 @@ export default function Command() {
           subtitle={ssn || "SSN non défini"}
           actions={
             <ActionPanel>
-              <Action.CopyToClipboard content={ssn || ""} title="Copier SSN" />
+              <Action.CopyToClipboard content={ssn || ""} title="Copier Ssn" />
             </ActionPanel>
           }
         />
@@ -99,7 +99,7 @@ export default function Command() {
           subtitle={bankDetails?.iban || "IBAN non défini"}
           actions={
             <ActionPanel>
-              <Action.CopyToClipboard content={bankDetails?.iban || ""} title="Copier IBAN" />
+              <Action.CopyToClipboard content={bankDetails?.iban || ""} title="Copier Iban" />
             </ActionPanel>
           }
         />

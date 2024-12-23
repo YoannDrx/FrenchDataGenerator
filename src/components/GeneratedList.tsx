@@ -15,7 +15,7 @@ export function GeneratedList({ name, ssn, iban, bic }: GeneratedListProps) {
         subtitle={name}
         actions={
           <ActionPanel>
-            <Action.CopyToClipboard content={name} title="Copier le Nom et prénom" />
+            <Action.CopyToClipboard content={name} title="Copier Nom & Prénom" />
           </ActionPanel>
         }
       />
@@ -24,7 +24,7 @@ export function GeneratedList({ name, ssn, iban, bic }: GeneratedListProps) {
         subtitle={ssn}
         actions={
           <ActionPanel>
-            <Action.CopyToClipboard content={ssn} title="Copier le SSN" />
+            <Action.CopyToClipboard content={ssn} title="Copier Ssn" />
           </ActionPanel>
         }
       />
@@ -33,7 +33,7 @@ export function GeneratedList({ name, ssn, iban, bic }: GeneratedListProps) {
         subtitle={iban}
         actions={
           <ActionPanel>
-            <Action.CopyToClipboard content={iban} title="Copier L'IBAN" />
+            <Action.CopyToClipboard content={iban} title="Copier Iban" />
           </ActionPanel>
         }
       />
@@ -42,7 +42,7 @@ export function GeneratedList({ name, ssn, iban, bic }: GeneratedListProps) {
         subtitle={bic}
         actions={
           <ActionPanel>
-            <Action.CopyToClipboard content={bic} title="Copier le BIC" />
+            <Action.CopyToClipboard content={bic} title="Copier Bic" />
           </ActionPanel>
         }
       />
