@@ -3,7 +3,7 @@
 ## [Improved Architecture and State Management] - 2024-12-30
 
 - Refactored project architecture for better modularity and maintainability.
-  - Split store logic into separate modules: `AddressStore`, `FakeDataStore`, and `LoadingStore`.
+  - Split logic.
   - Organized the project into clearer folder structures (`helpers`, `components`, `store`, etc.).
 - Integrated RXJS to manage application state between the menu bar and the main panel dynamically.
 - Implemented combined observables to handle multiple state streams effectively.
