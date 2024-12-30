@@ -136,15 +136,4 @@ export class FakeDataModule extends BaseModule {
 
     this.addressLoadingSubject.next(false);
   }
-
-  // Generate a random search query for addresses
-  private getRandomSearchQuery(): string {
-    const streetTypes = ["rue", "avenue", "boulevard", "place", "chemin"];
-    const streetNames = ["de Paris", "de la République", "des Fleurs", "du Port", "Saint-Michel", "Victor Hugo"];
-    const randomStreetType = streetTypes[Math.floor(Math.random() * streetTypes.length)];
-    const randomStreetName = streetNames[Math.floor(Math.random() * streetNames.length)];
-    const randomStreetNumber = Math.floor(Math.random() * 300) + 1;
-
-    return `${randomStreetNumber} ${randomStreetType} ${randomStreetName}`;
-  }
 }
