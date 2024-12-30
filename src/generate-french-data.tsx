@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { List, ActionPanel, Action, showToast, Toast } from "@raycast/api";
 import { useSubscribeObservable } from "./helpers/rx.helper";
-import { FakeDataStore } from "./store";
+import { FakeDataStore } from "./stores";
 import { EditForm } from "./components/EditForm";
-import { calculateAge } from "./helpers/date.helper";
+import { calculateAge } from "./utils/date.utils";
 
 export default function Command() {
   const { data: fakeData } = useSubscribeObservable(FakeDataStore.fakeData$);

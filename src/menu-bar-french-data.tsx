@@ -1,6 +1,6 @@
 import { MenuBarExtra, showToast, Toast, Clipboard, Icon } from "@raycast/api";
 import { useSubscribeObservable } from "./helpers/rx.helper";
-import { FakeDataStore } from "./store";
+import { FakeDataStore } from "./stores";
 
 export default function MenuBarFakeData() {
   const { data: fakeData } = useSubscribeObservable(FakeDataStore.fakeData$);

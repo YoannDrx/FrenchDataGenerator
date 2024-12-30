@@ -15,11 +15,11 @@ export const useDataObservable = <T>(
       setData(newData);
     });
 
-    // Charger les données initiales
+    // Load initial data
     fetchData(forceRefresh);
 
     return () => {
-      // Se désabonner lors du nettoyage
+      // Unsubscribe on cleanup
       subscription.unsubscribe();
     };
   }, [observable, fetchData]);
@@ -29,7 +29,7 @@ export const useDataObservable = <T>(
 
 // #endregion
 
-// #region Subscribe Observable
+// #region Abonner Observable
 
 export const useSubscribeObservable = <T>(observable: Observable<T | null>): { data: T | null } => {
   const [data, setData] = useState<T | null>(null);

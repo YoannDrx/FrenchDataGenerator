@@ -1,9 +1,15 @@
-import axios from "axios";
 import { BehaviorSubject } from "rxjs";
-import { generateRandomDOB, generateRandomSSN, getRandomBankDetails, getRandomName } from "../Utils/random";
-import { FakeDataState } from "../types/types";
+import { FakeDataState } from "../types/fakeData";
 import { BaseModule } from "./BaseModule.store";
 import { LocalStorage } from "@raycast/api";
+import {
+  generateRandomDob,
+  getRandomName,
+  generateRandomSSN,
+  getRandomBankDetails,
+  fetchRandomAddress,
+  getRandomSearchQuery,
+} from "../utils";
 
 export class FakeDataModule extends BaseModule {
   constructor() {
@@ -60,7 +66,8 @@ export class FakeDataModule extends BaseModule {
 
     try {
       const currentData = this.fakeDataSubject.getValue();
-      const newDob = overrides?.dob || currentData?.dob || generateRandomDOB(false); // Use overrides if provided
+      // const newDob = overrides?.dob || currentData?.dob || generateRandomDOB(false); // Use overrides if provided
+      const newDob = overrides?.dob || currentData?.dob || generateRandomDob(18, 99); // Use overrides if provided
       const isMinor = newDob ? new Date().getFullYear() - parseInt(newDob.split("/")[2], 10) < 18 : false;
       const newName = getRandomName();
       const newSSN = generateRandomSSN(newDob, newName.gender, isMinor);
@@ -103,26 +110,11 @@ export class FakeDataModule extends BaseModule {
 
     while (!fetchedAddress && retries < maxRetries) {
       try {
-        const query = this.getRandomSearchQuery();
-        console.log(`[FakeDataModule] Attempt ${retries + 1}: Fetching address with query: ${query}`);
+        const query = getRandomSearchQuery();
 
-        const response = await axios.get(
-          `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(
-            query,
-          )}&type=housenumber&autocomplete=1&limit=1`,
-        );
+        fetchedAddress = await fetchRandomAddress(query);
 
-        console.log("[FakeDataModule] Address API Response:", response.data);
-
-        const feature = response.data.features?.[0];
-        if (feature) {
-          const { properties } = feature;
-          fetchedAddress =
-            properties.label ||
-            `${properties.housenumber || ""} ${properties.street}, ${properties.postcode} ${properties.city}`.trim();
-
-          console.log("[FakeDataModule] Parsed Address:", fetchedAddress);
-
+        if (fetchedAddress) {
           await this.updateFakeData({ address: fetchedAddress });
         } else {
           console.warn("[FakeDataModule] No valid address found.");

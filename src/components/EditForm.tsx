@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Form, ActionPanel, Action, showToast, Toast } from "@raycast/api";
-import { FakeDataStore } from "../store";
-import { calculateAge, generateRandomDob } from "../helpers/date.helper";
+import { FakeDataStore } from "../stores";
+import { calculateAge, generateRandomDob } from "../utils/date.utils";
 
 type EditFormProps = {
   initialDob: string;
