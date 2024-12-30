@@ -1,25 +1,49 @@
-import { Form, ActionPanel, Action, showToast, Toast } from "@raycast/api";
 import { useState } from "react";
+import { Form, ActionPanel, Action, showToast, Toast } from "@raycast/api";
 import { FakeDataStore } from "../store";
-import { FakeDataState } from "../types/types";
+import { calculateAge, generateRandomDob } from "../helpers/date.helper";
 
-interface EditFormProps {
-  fakeData: FakeDataState | null;
+type EditFormProps = {
+  initialDob: string;
   onClose: () => void;
-}
+};
 
-export function EditForm({ fakeData, onClose }: EditFormProps) {
-  const [dob, setDob] = useState(fakeData?.dob || "");
-  const [isMinor, setIsMinor] = useState(dob ? new Date().getFullYear() - parseInt(dob.split("/")[2], 10) < 18 : false);
+export function EditForm({ initialDob, onClose }: EditFormProps) {
+  const [editedDob, setEditedDob] = useState(initialDob || "");
+  const [isMinorChecked, setIsMinorChecked] = useState(false);
+  const [isMajorChecked, setIsMajorChecked] = useState(false);
 
-  const handleSave = async () => {
+  const age = calculateAge(editedDob);
+
+  const handleCheckboxChange = (type: "minor" | "major") => {
+    if (type === "minor") {
+      setEditedDob(generateRandomDob(0, 12));
+      setIsMinorChecked(true);
+      setIsMajorChecked(false);
+      showToast({ style: Toast.Style.Animated, title: "Génération d'une date pour un mineur..." });
+    } else if (type === "major") {
+      setEditedDob(generateRandomDob(18, 99));
+      setIsMajorChecked(true);
+      setIsMinorChecked(false);
+      showToast({ style: Toast.Style.Animated, title: "Génération d'une date pour un majeur..." });
+    }
+  };
+
+  const handleDobEdit = (value: string) => {
+    setEditedDob(value);
+    setIsMinorChecked(false);
+    setIsMajorChecked(false);
+    showToast({ style: Toast.Style.Animated, title: "Modification de la date de naissance..." });
+  };
+
+  const handleSaveAndRegenerate = async () => {
     try {
-      const updatedDob = dob || (isMinor ? "01/01/2010" : "01/01/1980");
+      const updatedDob = editedDob || generateRandomDob(18, 99);
       await FakeDataStore.regenerateData({ dob: updatedDob });
       showToast({ style: Toast.Style.Success, title: "Données sauvegardées et régénérées !" });
       onClose();
-    } catch {
-      showToast({ style: Toast.Style.Failure, title: "Échec de la sauvegarde" });
+    } catch (error) {
+      showToast({ style: Toast.Style.Failure, title: "Échec de la mise à jour des données" });
     }
   };
 
@@ -27,21 +51,34 @@ export function EditForm({ fakeData, onClose }: EditFormProps) {
     <Form
       actions={
         <ActionPanel>
-          <Action title="Valider" onAction={handleSave} />
-          <Action title="Annuler" onAction={onClose} />
+          <Action title="Valider" onAction={handleSaveAndRegenerate} />
+          <Action
+            title="Annuler"
+            onAction={() => {
+              showToast({ style: Toast.Style.Failure, title: "Modification annulée" });
+              onClose();
+            }}
+          />
         </ActionPanel>
       }
     >
       <Form.Checkbox
-        id="isMinor"
+        id="minor"
         label="Générer une personne mineure"
-        value={isMinor}
-        onChange={(newValue) => {
-          setIsMinor(newValue);
-          setDob(newValue ? "01/01/2010" : "01/01/1980");
-        }}
+        value={isMinorChecked}
+        onChange={() => handleCheckboxChange("minor")}
       />
-      <Form.TextField id="dob" title="Date de naissance" placeholder="JJ/MM/AAAA" value={dob} onChange={setDob} />
+      <Form.Checkbox
+        id="major"
+        label="Générer une personne majeure"
+        value={isMajorChecked}
+        onChange={() => handleCheckboxChange("major")}
+      />
+      <Form.Description
+        title="Date de naissance"
+        text={`Date : ${editedDob || "Non définie"}${age !== null ? ` | Âge : ${age} ans` : ""}`}
+      />
+      <Form.TextField id="dob" placeholder="JJ/MM/AAAA" value={editedDob} onChange={handleDobEdit} />
     </Form>
   );
 }

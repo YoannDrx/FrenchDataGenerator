@@ -8,7 +8,7 @@ import { LocalStorage } from "@raycast/api";
 export class FakeDataModule extends BaseModule {
   constructor() {
     super();
-    this.loadFromLocalStorage(); // Charger les données depuis le LocalStorage au démarrage
+    this.loadFromLocalStorage(); // Load data from LocalStorage on initialization
   }
 
   private readonly fakeDataSubject = new BehaviorSubject<FakeDataState>({
@@ -26,7 +26,7 @@ export class FakeDataModule extends BaseModule {
   public isLoading$ = this.loadingSubject.asObservable();
   public isAddressLoading$ = this.addressLoadingSubject.asObservable();
 
-  // Charger les données depuis le LocalStorage
+  // Load data from LocalStorage
   private async loadFromLocalStorage() {
     try {
       const dob = (await LocalStorage.getItem<string>("dob")) || null;
@@ -41,7 +41,7 @@ export class FakeDataModule extends BaseModule {
     }
   }
 
-  // Sauvegarder les données dans le LocalStorage
+  // Save data to LocalStorage
   private async saveToLocalStorage(data: FakeDataState) {
     try {
       await LocalStorage.setItem("dob", data.dob || "");
@@ -54,13 +54,13 @@ export class FakeDataModule extends BaseModule {
     }
   }
 
-  // Fonction pour régénérer les données
+  // Regenerate data with optional overrides
   public async regenerateData(overrides?: Partial<FakeDataState>): Promise<void> {
     this.loadingSubject.next(true);
 
     try {
       const currentData = this.fakeDataSubject.getValue();
-      const newDob = overrides?.dob || currentData?.dob || generateRandomDOB(false); // Priorité à l'override
+      const newDob = overrides?.dob || currentData?.dob || generateRandomDOB(false); // Use overrides if provided
       const isMinor = newDob ? new Date().getFullYear() - parseInt(newDob.split("/")[2], 10) < 18 : false;
       const newName = getRandomName();
       const newSSN = generateRandomSSN(newDob, newName.gender, isMinor);
@@ -71,14 +71,14 @@ export class FakeDataModule extends BaseModule {
         name: newName,
         ssn: newSSN,
         bankDetails: newBankDetails,
-        address: "Non générée", // Forcer la régénération de l'adresse
+        address: "Non générée", // Force regeneration of the address
         ...overrides,
       };
 
       this.fakeDataSubject.next(updatedData);
-      await this.saveToLocalStorage(updatedData); // Sauvegarder immédiatement dans le LocalStorage
+      await this.saveToLocalStorage(updatedData); // Save changes to LocalStorage
 
-      // Toujours régénérer une nouvelle adresse
+      // Fetch a new address if necessary
       await this.fetchAddress();
     } catch (error) {
       console.error("[FakeDataModule] Error during data regeneration:", error);
@@ -87,15 +87,15 @@ export class FakeDataModule extends BaseModule {
     }
   }
 
-  // Fonction pour mettre à jour partiellement les données
+  // Update partial data
   public async updateFakeData(newData: Partial<FakeDataState>): Promise<void> {
     const currentData = this.fakeDataSubject.getValue();
     const updatedData = { ...currentData, ...newData };
     this.fakeDataSubject.next(updatedData);
-    await this.saveToLocalStorage(updatedData); // Sauvegarder immédiatement les modifications
+    await this.saveToLocalStorage(updatedData); // Save immediately to LocalStorage
   }
 
-  // Fonction pour récupérer une nouvelle adresse
+  // Fetch a new random address
   public async fetchAddress(maxRetries = 10): Promise<void> {
     this.addressLoadingSubject.next(true);
     let retries = 0;
@@ -139,13 +139,13 @@ export class FakeDataModule extends BaseModule {
 
     if (!fetchedAddress) {
       console.error(`[FakeDataModule] Failed to fetch a valid address after ${maxRetries} retries`);
-      await this.updateFakeData({ address: "Aucune adresse valide trouvée après plusieurs tentatives." });
+      await this.updateFakeData({ address: "No valid address found after multiple attempts." });
     }
 
     this.addressLoadingSubject.next(false);
   }
 
-  // Fonction pour générer une recherche aléatoire pour les adresses
+  // Generate a random search query for addresses
   private getRandomSearchQuery(): string {
     const streetTypes = ["rue", "avenue", "boulevard", "place", "chemin"];
     const streetNames = ["de Paris", "de la République", "des Fleurs", "du Port", "Saint-Michel", "Victor Hugo"];

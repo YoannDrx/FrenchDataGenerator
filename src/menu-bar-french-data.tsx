@@ -1,9 +1,9 @@
 import { MenuBarExtra, showToast, Toast, Clipboard, Icon } from "@raycast/api";
-import { useSubscribeObservable } from "./helpers/rx.helper"; // Assurez-vous que ce hook est bien défini
+import { useSubscribeObservable } from "./helpers/rx.helper";
 import { FakeDataStore } from "./store";
 
 export default function MenuBarFakeData() {
-  const { data: fakeData } = useSubscribeObservable(FakeDataStore.fakeData$); // Utiliser les observables de RXJS
+  const { data: fakeData } = useSubscribeObservable(FakeDataStore.fakeData$);
   const { data: isLoading } = useSubscribeObservable(FakeDataStore.isLoading$);
 
   const copyToClipboard = async (label: string, content?: string | null) => {
@@ -17,7 +17,7 @@ export default function MenuBarFakeData() {
 
   const regenerateData = async () => {
     try {
-      await FakeDataStore.regenerateData(); // Appel direct à la méthode de RXJS
+      await FakeDataStore.regenerateData();
       showToast({ style: Toast.Style.Success, title: "Données régénérées !" });
     } catch (error) {
       console.error("[MenuBarFakeData] Erreur lors de la régénération des données :", error);

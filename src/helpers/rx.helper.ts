@@ -3,7 +3,7 @@ import { Observable, combineLatest } from "rxjs";
 
 // #region Observable
 
-export const useDataObservable = <T,>(
+export const useDataObservable = <T>(
   observable: Observable<T | null>,
   fetchData: (forceRefresh?: boolean) => Promise<void>,
   forceRefresh = false,
@@ -31,7 +31,7 @@ export const useDataObservable = <T,>(
 
 // #region Subscribe Observable
 
-export const useSubscribeObservable = <T,>(observable: Observable<T | null>): { data: T | null } => {
+export const useSubscribeObservable = <T>(observable: Observable<T | null>): { data: T | null } => {
   const [data, setData] = useState<T | null>(null);
 
   useEffect(() => {
@@ -52,11 +52,11 @@ export const useSubscribeObservable = <T,>(observable: Observable<T | null>): { 
 // #region Combine Observables
 type ObservableValue<T> = T extends Observable<infer U> ? U : never;
 
-type ObservableValues<T extends Record<string, any>> = {
+type ObservableValues<T extends Record<string, Observable<unknown>>> = {
   [K in keyof T]: ObservableValue<T[K]>;
 };
 
-export const useCombinedObservables = <T extends Record<string, Observable<any>>>(
+export const useCombinedObservables = <T extends Record<string, Observable<unknown>>>(
   observables: T,
   callback: (result: ObservableValues<T>) => void,
 ) => {
@@ -65,8 +65,8 @@ export const useCombinedObservables = <T extends Record<string, Observable<any>>
 
   useEffect(() => {
     const subscription = combineLatest(obsArray).subscribe((values) => {
-      const result = values.reduce((acc, value, index) => {
-        acc[keys[index]] = value;
+      const result = values.reduce<ObservableValues<T>>((acc, value, index) => {
+        acc[keys[index] as keyof T] = value as ObservableValue<T[keyof T]>;
         return acc;
       }, {} as ObservableValues<T>);
 

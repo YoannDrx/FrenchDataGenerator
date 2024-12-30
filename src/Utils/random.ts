@@ -68,20 +68,13 @@ export function generateRandomSSN(dob?: string, gender?: "male" | "female", isMi
     .toString()
     .padStart(3, "0"); // Order number (001-999)
 
-  // Determine prefix based on gender
   const prefix = gender === "male" ? "1" : "2";
-
-  // Construct the base SSN
   const baseSSN = `${prefix}${year}${month}${department}${commune}${order}`;
-
-  // Calculate the key
   const key = (97 - (parseInt(baseSSN, 10) % 97)).toString().padStart(2, "0");
 
-  // Combine the base SSN and key
   return `${baseSSN}${key}`;
 }
 
-// Random generation of IBAN and BIC
 export function getRandomBankDetails() {
   const randomIndex = Math.floor(Math.random() * bankDetails.length);
   return bankDetails[randomIndex];
